@@ -18,7 +18,7 @@ return new class extends Migration
             $table->foreignId('vehicle_id')->constrained()->cascadeOnDelete();
             $table->timestamp('starts_at');
             $table->timestamp('ends_at');
-            $table->enum('status', ['scheduled','in_progress','completed','canceled'])->default('scheduled');
+            $table->enum('status', ['scheduled','in_progress','completed','cancelled'])->default('scheduled');
             $table->timestamps();
 
             // indexes for overlap checks
