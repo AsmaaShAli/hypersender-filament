@@ -15,7 +15,7 @@ class TripFactory extends Factory
 
     public function definition(): array
     {
-        $start = $this->faker->dateTimeBetween('-1 week', '+1 week');
+        $start = $this->faker->dateTimeBetween('-1 day', '+1 day');
         $end = (clone $start)->modify('+'.rand(1, 5).' hours');
 
         return [

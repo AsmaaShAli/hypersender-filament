@@ -56,8 +56,16 @@ class VehicleResource extends Resource
                 ->searchable(),
 
             Tables\Columns\TextColumn::make('drivers_count')
-                ->counts('drivers')
-                ->label('Drivers'),
+                ->label('Drivers')
+                ->getStateUsing(fn ($record) =>
+                    $record->drivers->count()
+                ),
+
+            /*Tables\Columns\TextColumn::make('drivers_count')
+                 ->label('Drivers')
+                 ->getStateUsing(fn ($record) =>
+                 $record->drivers ? $record->drivers->pluck('id')->unique()->count() : 0
+                 ),*/
 
             Tables\Columns\TextColumn::make('trips_count')
                 ->counts('trips')
@@ -79,6 +87,12 @@ class VehicleResource extends Resource
         return [
             //
         ];
+    }
+
+    public static function getEloquentQuery(): \Illuminate\Database\Eloquent\Builder
+    {
+        return parent::getEloquentQuery()
+            ->with(['trips','drivers']); // eager load drivers
     }
 
     public static function getPages(): array

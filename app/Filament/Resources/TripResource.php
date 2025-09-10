@@ -3,6 +3,7 @@
 namespace App\Filament\Resources;
 
 use App\Filament\Resources\TripResource\Pages;
+use App\Models\Driver;
 use App\Models\Trip;
 use App\Models\Vehicle;
 use App\Rules\NoOverlap;
@@ -61,7 +62,7 @@ class TripResource extends Resource
             ->rules([new NoOverlap(
                 fn() => request()->input('driver_id'),
                 fn() => request()->input('vehicle_id'),
-                request()->route('record')?->id // for edit mode
+                request()->route('record')?->id ?? null // for edit mode
             )]),
 
         Forms\Components\Select::make('status')
@@ -86,7 +87,7 @@ class TripResource extends Resource
                         'warning' => 'active',
                         'success' => 'completed',
                         'danger'  => 'cancelled',
-                    ])
+                    ])->sortable()
             ])
             ->defaultSort('starts_at', 'desc')
             ->filters([

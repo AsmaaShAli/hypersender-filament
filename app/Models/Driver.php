@@ -18,9 +18,18 @@ class Driver extends Model
         return $this->hasMany(Trip::class);
     }
 
-    public function vehicles()
+   public function vehicles()
     {
         // Drivers connect to vehicles through trips
-        return $this->belongsToMany(Vehicle::class, 'trips')->distinct();
+        return $this->belongsToMany(Vehicle::class, 'trips')
+            ->withPivot(['starts_at', 'ends_at', 'status'])
+            ->groupBy('vehicles.id');
     }
+
+    /*
+    public function vehicles()
+    {
+        return $this->trips()->groupBy('vehicle_id');
+    }
+    */
 }

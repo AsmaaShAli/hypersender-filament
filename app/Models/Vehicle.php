@@ -17,9 +17,17 @@ class Vehicle extends Model
     {
         return $this->hasMany(Trip::class);
     }
-
     public function drivers()
     {
-        return $this->belongsToMany(Driver::class, 'trips')->distinct();
+        return $this->belongsToMany(Driver::class, 'trips')
+            ->withPivot(['starts_at', 'ends_at', 'status'])
+            ->groupBy('drivers.id');
     }
+
+    /*
+    public function drivers()
+    {
+        return $this->trips()->groupBy('driver_id');
+    }
+    */
 }
