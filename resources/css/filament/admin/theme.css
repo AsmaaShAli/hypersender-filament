@@ -1,0 +1,41 @@
+@import '../../../../vendor/filament/filament/resources/css/theme.css';
+
+@config 'tailwind.config.js';
+
+@layer components {
+    /* Sidebar (main background) */
+    .fi-sidebar {
+        @apply bg-gray-900 text-gray-200;
+    }
+
+    /* Sidebar nav groups */
+    .fi-sidebar-nav-groups {
+        @apply bg-gray-800;
+    }
+
+    /* Active link in sidebar */
+    .fi-sidebar-item-active {
+        @apply bg-indigo-600 text-white;
+    }
+
+    /* Topbar (header) */
+    .fi-header {
+        @apply bg-gray-950 text-gray-100;
+    }
+
+    /* Topbar nav (buttons, badges) */
+    .fi-header-nav {
+        @apply text-gray-100;
+    }
+
+    /* Cards (make them dark too) */
+    .fi-card {
+        @apply bg-gray-800 text-gray-200;
+    }
+
+    /* Table headers */
+    .fi-table thead {
+        @apply bg-gray-600 text-gray-300;
+    }
+}
+
