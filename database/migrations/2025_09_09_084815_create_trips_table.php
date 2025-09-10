@@ -13,12 +13,12 @@ return new class extends Migration
     {
         Schema::create('trips', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('company_id')->constrained()->cascadeOnDelete();
-            $table->foreignId('driver_id')->constrained()->cascadeOnDelete();
-            $table->foreignId('vehicle_id')->constrained()->cascadeOnDelete();
+            $table->foreignId('company_id');
+            $table->foreignId('driver_id');
+            $table->foreignId('vehicle_id');
             $table->timestamp('starts_at');
             $table->timestamp('ends_at');
-            $table->enum('status', ['scheduled','in_progress','completed','cancelled'])->default('scheduled');
+            $table->enum('status', ['scheduled','active','completed','cancelled'])->default('scheduled');
             $table->timestamps();
 
             // indexes for overlap checks

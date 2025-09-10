@@ -58,7 +58,11 @@ class TripResource extends Resource
         Forms\Components\DateTimePicker::make('ends_at')
             ->required()
             ->after('starts_at')
-            ->rules([new NoOverlap()]),
+            ->rules([new NoOverlap(
+                fn() => request()->input('driver_id'),
+                fn() => request()->input('vehicle_id'),
+                request()->route('record')?->id // for edit mode
+            )]),
 
         Forms\Components\Select::make('status')
             ->options(TripStatus::options())

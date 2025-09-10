@@ -40,6 +40,11 @@ class Trip extends Model
 
     public function scopeActive($q)
     {
-        return $q->where('status','<>','cancelled');
+        return $q->where('status', TripStatus::Active);
+    }
+
+    public function scopeNotCancelled($q)
+    {
+        return $q->where('status','<>',TripStatus::Cancelled);
     }
 }

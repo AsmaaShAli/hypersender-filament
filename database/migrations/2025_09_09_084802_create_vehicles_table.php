@@ -16,7 +16,7 @@ return new class extends Migration
             $table->foreignId('company_id')->constrained()->cascadeOnDelete();
             $table->string('plate_number')->unique();
             $table->string('model')->nullable();
-            $table->index(['company_id', 'plate_no']);
+            $table->index(['company_id', 'plate_number']);
             $table->timestamps();
         });
     }

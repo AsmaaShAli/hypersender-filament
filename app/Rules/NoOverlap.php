@@ -9,13 +9,24 @@ use Illuminate\Contracts\Validation\ValidationRule;
 
 class NoOverlap implements ValidationRule
 {
+    protected $driverId;
+    protected $vehicleId;
+    protected $tripId;
+
+    public function __construct($driverId, $vehicleId, $tripId = null)
+    {
+        $this->driverId = $driverId;
+        $this->vehicleId = $vehicleId;
+        $this->tripId = $tripId;
+    }
+
     public function validate(string $attribute, mixed $value, Closure $fail): void
     {
         $start     = request('starts_at');
         $end       = request('ends_at');
-        $driverId  = request('driver_id');
-        $vehicleId = request('vehicle_id');
-        $tripId    = request()->route('record'); // editing case
+        $driverId  = $this->driverId;
+        $vehicleId = $this->vehicleId;
+        $tripId    = $this->tripId; // editing case
 
         if (! $start || ! $end || ! $driverId || ! $vehicleId) {
             return;
@@ -37,7 +48,7 @@ class NoOverlap implements ValidationRule
             })
             ->where('starts_at', '<', $end) // if the new trip is happening before than the existing one
             ->where('ends_at', '>', $start) // if the new trip is happening after the existing one
-            ->active()
+            ->notCancelled()
             ->exists();
 
         if ($conflict) {
