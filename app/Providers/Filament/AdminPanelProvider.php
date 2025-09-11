@@ -2,11 +2,13 @@
 
 namespace App\Providers\Filament;
 
+use App\Services\StatsService;
 use Filament\Enums\ThemeMode;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\AuthenticateSession;
 use Filament\Http\Middleware\DisableBladeIconComponents;
 use Filament\Http\Middleware\DispatchServingFilamentEvent;
+use Filament\Navigation\NavigationItem;
 use Filament\Pages;
 use Filament\Panel;
 use Filament\PanelProvider;
@@ -45,6 +47,8 @@ class AdminPanelProvider extends PanelProvider
                 Widgets\AccountWidget::class,
                 Widgets\FilamentInfoWidget::class,
             ])
+            //->sidebarNavigation()
+            ->renderHook('panels::topbar.start', fn () => view('components.navbar-kpis'))
             ->middleware([
                 EncryptCookies::class,
                 AddQueuedCookiesToResponse::class,

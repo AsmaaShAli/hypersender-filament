@@ -17,7 +17,7 @@ class TransportStats extends BaseWidget
         return [
             // Active trips right now
             Card::make('Active Trips', $stats['active_trips'])
-                ->icon('heroicon-o-truck')
+                ->icon('heroicon-o-map-pin')
                 ->color('primary'),
 
             // Available drivers (drivers not in active trips)
