@@ -66,19 +66,19 @@ class StatsService
             now()->addMinutes(15),
             fn () => [
                 'active_trips' => Trip::where('starts_at', '<=', now())
-                    ->orWhere('ends_at', '>=', now())
-                    ->active()
+                        ->orWhere('ends_at', '>=', now())
+                        ->active()
                     ->count(),
 
                 'available_drivers' => Driver::whereDoesntHave('trips', function ($q) {
                     $q->where('starts_at', '<=', now())
-                        ->where('ends_at', '>=', now())
-                        ->whereIn('status',TripStatus::Finished());
+                        ->orWhere('ends_at', '>=', now())
+                        ->whereNotIn('status',TripStatus::Finished());
                 })->count(),
 
                 'available_vehicles' => Vehicle::whereDoesntHave('trips', function ($q) {
                     $q->where('starts_at', '<=', now())
-                        ->where('ends_at', '>=', now())
+                        ->Orwhere('ends_at', '>=', now())
                         ->whereIn('status',TripStatus::Finished());
                 })->count(),
 
