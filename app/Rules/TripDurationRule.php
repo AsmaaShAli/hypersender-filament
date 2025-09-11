@@ -7,28 +7,32 @@ use Illuminate\Contracts\Validation\ValidationRule;
 
 class TripDurationRule implements ValidationRule
 {
-    /**
-     * Run the validation rule.
-     *
-     * @param  \Closure(string, ?string=): \Illuminate\Translation\PotentiallyTranslatedString  $fail
-     */
+    private $ends_at;
+    private $starts_at;
+
+    public function __construct($starts_at)
+    {
+        $this->starts_at = $starts_at;
+    }
     public function validate(string $attribute, mixed $value, Closure $fail): void
     {
         // min trip is 30 mins, max trip is 12 hours = 720 mins
         $minMinutes = 30;
         $maxMinutes = 720;
 
-        if (! request()->has('starts_at') || ! request()->has('ends_at')) {
+        $this->ends_at = $value;
+
+        if (! $this->starts_at || ! $this->ends_at) {
             return;
         }
 
-        $start = \Carbon\Carbon::parse(request()->input('starts_at'));
-        $end   = \Carbon\Carbon::parse(request()->input('ends_at'));
+        $start = \Carbon\Carbon::parse($this->starts_at);
+        $end   = \Carbon\Carbon::parse($this->ends_at);
 
         $duration = $start->diffInMinutes($end, false);
 
         if ($duration < $minMinutes) {
-            $fail("Trip duration must be at least {$this->minMinutes} minutes.");
+            $fail("Trip duration must be at least {$minMinutes} minutes.");
         }
 
         $maxMinutesInHours = 12;

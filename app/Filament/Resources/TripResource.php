@@ -18,6 +18,7 @@ use Filament\Tables\Table;
 
 class TripResource extends Resource
 {
+
     protected static ?string $model = Trip::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-map-pin';
@@ -60,13 +61,17 @@ class TripResource extends Resource
             ->required()
             ->after('starts_at')
             ->rules([
-                new TripDurationRule(),
-                new NoOverlapRule(
-                fn() => request()->input('driver_id'),
-                fn() => request()->input('vehicle_id'),
-                request()->route('record')?->id ?? null // for edit mode
-            )]),
-
+                function ($get) {
+                    return new TripDurationRule($get('starts_at'));
+                }, function ($get,$record) {
+                    return new NoOverlapRule(
+                        $get('starts_at'),
+                        $get('ends_at'),
+                        $get('driver_id'),
+                        $get('vehicle_id'),
+                        $record?->id ); // for edit mode
+                }
+            ]),
         Forms\Components\Select::make('status')
             ->options(TripStatus::options())
             ->default(TripStatus::Scheduled->value)

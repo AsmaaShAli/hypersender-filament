@@ -23,6 +23,6 @@ class Driver extends Model
         // Drivers connect to vehicles through trips
         return $this->belongsToMany(Vehicle::class, 'trips')
             ->withPivot(['starts_at', 'ends_at', 'status'])
-            ->groupBy('vehicles.id');
+            ->groupBy('plate_number');
     }
 }

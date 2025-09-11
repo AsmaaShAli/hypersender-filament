@@ -6,15 +6,21 @@ use App\Models\Trip;
 use Carbon\Carbon;
 use Closure;
 use Illuminate\Contracts\Validation\ValidationRule;
+use Illuminate\Support\Facades\Route;
 
 class NoOverlapRule implements ValidationRule
 {
     protected $driverId;
     protected $vehicleId;
+    protected $start;
+    protected $end;
     protected $tripId;
 
-    public function __construct($driverId, $vehicleId, $tripId = null)
+
+    public function __construct($start, $end, $driverId, $vehicleId, $tripId = null)
     {
+        $this->start = $start;
+        $this->end = $end;
         $this->driverId = $driverId;
         $this->vehicleId = $vehicleId;
         $this->tripId = $tripId;
@@ -22,8 +28,8 @@ class NoOverlapRule implements ValidationRule
 
     public function validate(string $attribute, mixed $value, Closure $fail): void
     {
-        $start     = request('starts_at');
-        $end       = request('ends_at');
+        $start     = $this->start;
+        $end       = $this->end;
         $driverId  = $this->driverId;
         $vehicleId = $this->vehicleId;
         $tripId    = $this->tripId; // editing case
@@ -35,11 +41,6 @@ class NoOverlapRule implements ValidationRule
         $start = Carbon::parse($start);
         $end   = Carbon::parse($end);
 
-        if ($end->lessThanOrEqualTo($start)) {
-            $fail('End time must be after the start time.');
-            return;
-        }
-
         $conflict = Trip::query()
             ->when($tripId, fn ($q) => $q->where('id', '!=', $tripId))
             ->where(function ($q) use ($driverId, $vehicleId) {
@@ -48,7 +49,7 @@ class NoOverlapRule implements ValidationRule
             })
             ->where('starts_at', '<', $end) // if the new trip is happening before than the existing one
             ->where('ends_at', '>', $start) // if the new trip is happening after the existing one
-            ->notCancelled()
+            ->whereIn('status',['active','scheduled'])
             ->exists();
 
         if ($conflict) {

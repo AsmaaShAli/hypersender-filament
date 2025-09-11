@@ -3,6 +3,7 @@
 namespace App\Services;
 
 
+use App\Enums\TripStatus;
 use App\Models\Company;
 use App\Models\Driver;
 use App\Models\Trip;
@@ -21,8 +22,7 @@ class StatsService
             now()->addMinutes(10),
             fn () => Driver::findOrFail($driverId)
                 ->vehicles()
-                ->distinct('vehicles.id')
-                ->count()
+                ->get()->count()
         );
     }
 
@@ -36,8 +36,7 @@ class StatsService
             now()->addMinutes(10),
             fn () => Vehicle::findOrFail($vehicleId)
                 ->drivers()
-                ->distinct('drivers.id')
-                ->count()
+                ->get()->count()
         );
     }
 
@@ -67,23 +66,28 @@ class StatsService
             now()->addMinutes(15),
             fn () => [
                 'active_trips' => Trip::where('starts_at', '<=', now())
-                    ->where('ends_at', '>=', now())
+                    ->orWhere('ends_at', '>=', now())
+                    ->active()
                     ->count(),
 
                 'available_drivers' => Driver::whereDoesntHave('trips', function ($q) {
                     $q->where('starts_at', '<=', now())
-                        ->where('ends_at', '>=', now());
+                        ->where('ends_at', '>=', now())
+                        ->whereIn('status',TripStatus::Finished());
                 })->count(),
 
                 'available_vehicles' => Vehicle::whereDoesntHave('trips', function ($q) {
                     $q->where('starts_at', '<=', now())
-                        ->where('ends_at', '>=', now());
+                        ->where('ends_at', '>=', now())
+                        ->whereIn('status',TripStatus::Finished());
                 })->count(),
 
                 'completed_trips_month' => Trip::whereBetween('ends_at', [
                     now()->startOfMonth(),
-                    now()->endOfMonth(),
-                ])->count(),
+                    now()->endOfMonth()
+                ])
+                    ->where('status','completed')
+                    ->count(),
             ]
         );
     }
@@ -105,7 +109,7 @@ class StatsService
             "company:{$companyId}:vehicles_list",
             now()->addMinutes(30),
             fn () => Vehicle::where('company_id', $companyId)
-                ->pluck('name', 'id')
+                ->pluck('plate_number', 'id')
                 ->toArray()
         );
     }
