@@ -2,12 +2,12 @@
 
 namespace App\Filament\Resources;
 
+use App\Enums\TripStatus;
 use App\Filament\Resources\TripResource\Pages;
 use App\Models\Driver;
 use App\Models\Trip;
 use App\Models\Vehicle;
 use App\Rules\NoOverlap;
-use App\TripStatus;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
@@ -113,6 +113,12 @@ class TripResource extends Resource
         return [
             //
         ];
+    }
+
+    public static function getEloquentQuery(): \Illuminate\Database\Eloquent\Builder
+    {
+        return parent::getEloquentQuery()
+            ->with(['driver', 'vehicle', 'company']);
     }
 
     public static function getPages(): array

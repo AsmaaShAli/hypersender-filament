@@ -12,6 +12,30 @@ class TransportStats extends BaseWidget
 {
     protected function getStats(): array
     {
+        $stats = \App\Services\StatsService::dashboard();
+
+        return [
+            // Active trips right now
+            Card::make('Active Trips', $stats['active_trips'])
+                ->icon('heroicon-o-truck')
+                ->color('primary'),
+
+            // Available drivers (drivers not in active trips)
+            Card::make('Available Drivers', $stats['available_drivers'])
+                ->icon('heroicon-o-user-group')
+                ->color('success'),
+
+            // Available vehicles
+            Card::make('Available Vehicles', $stats['available_vehicles'])
+                ->icon('heroicon-o-truck')
+                ->color('success'),
+
+            // Trips completed this month
+            Card::make('Completed Trips (This Month)', $stats['completed_trips_month'])
+                ->icon('heroicon-o-check-circle')
+                ->color('info'),
+        ];
+
         return [
             // Active trips right now
             Card::make('Active Trips', Cache::remember('active_trips', 60, fn () =>

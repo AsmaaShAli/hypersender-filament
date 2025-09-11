@@ -4,6 +4,7 @@ namespace App\Filament\Resources;
 
 use App\Filament\Resources\CompanyResource\Pages;
 use App\Models\Company;
+use App\Services\StatsService;
 use Filament\Forms;
 use Filament\Tables;
 use Filament\Forms\Form;
@@ -32,15 +33,24 @@ class CompanyResource extends Resource
     {
         return $table->columns([
             Tables\Columns\TextColumn::make('name')->sortable()->searchable(),
+
             Tables\Columns\TextColumn::make('drivers_count')
-                ->counts('drivers')
-                ->label('Drivers'),
+                ->label('Drivers')
+                ->getStateUsing(fn ($record) =>
+                    StatsService::companyStats($record->id)['drivers_count']
+                ),
+
             Tables\Columns\TextColumn::make('vehicles_count')
-                ->counts('vehicles')
-                ->label('Vehicles'),
+                ->label('Vehicles')
+                ->getStateUsing(fn ($record) =>
+                    StatsService::companyStats($record->id)['vehicles_count']
+                ),
+
             Tables\Columns\TextColumn::make('trips_count')
-                ->counts('trips')
-                ->label('Trips'),
+                ->label('Trips')
+                ->getStateUsing(fn ($record) =>
+                    StatsService::companyStats($record->id)['trips_count']
+                ),
         ])
             ->filters([])
             ->actions([

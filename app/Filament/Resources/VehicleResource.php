@@ -5,6 +5,7 @@ namespace App\Filament\Resources;
 use App\Filament\Resources\VehicleResource\Pages;
 use App\Filament\Resources\VehicleResource\RelationManagers;
 use App\Models\Vehicle;
+use App\Services\StatsService;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
@@ -58,14 +59,8 @@ class VehicleResource extends Resource
             Tables\Columns\TextColumn::make('drivers_count')
                 ->label('Drivers')
                 ->getStateUsing(fn ($record) =>
-                    $record->drivers->count()
+                    StatsService::vehicleDriversCount($record->id)
                 ),
-
-            /*Tables\Columns\TextColumn::make('drivers_count')
-                 ->label('Drivers')
-                 ->getStateUsing(fn ($record) =>
-                 $record->drivers ? $record->drivers->pluck('id')->unique()->count() : 0
-                 ),*/
 
             Tables\Columns\TextColumn::make('trips_count')
                 ->counts('trips')

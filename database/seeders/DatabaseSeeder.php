@@ -23,15 +23,13 @@ class DatabaseSeeder extends Seeder
         \App\Models\Company::factory(1)
             ->has(\App\Models\Driver::factory(10))
             ->has(\App\Models\Vehicle::factory(5))
-            ->create();
-
-        /*
+            ->create()
             ->each(function ($company) {
                 \App\Models\Trip::factory(20)->create([
                     'company_id' => $company->id,
                     'driver_id' => $company->drivers->random()->id,
                     'vehicle_id' => $company->vehicles->random()->id,
                 ]);
-         */
+            });
     }
 }

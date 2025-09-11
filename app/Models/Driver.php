@@ -25,11 +25,4 @@ class Driver extends Model
             ->withPivot(['starts_at', 'ends_at', 'status'])
             ->groupBy('vehicles.id');
     }
-
-    /*
-    public function vehicles()
-    {
-        return $this->trips()->groupBy('vehicle_id');
-    }
-    */
 }

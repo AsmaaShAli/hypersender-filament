@@ -2,7 +2,7 @@
 
 namespace App\Models;
 
-use App\TripStatus;
+use App\Enums\TripStatus;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 

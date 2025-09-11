@@ -2,8 +2,8 @@
 
 namespace Database\Factories;
 
+use App\Enums\TripStatus;
 use App\Models\Trip;
-use App\TripStatus;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
