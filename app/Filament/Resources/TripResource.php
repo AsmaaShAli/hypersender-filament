@@ -7,7 +7,9 @@ use App\Filament\Resources\TripResource\Pages;
 use App\Models\Driver;
 use App\Models\Trip;
 use App\Models\Vehicle;
-use App\Rules\NoOverlap;
+use App\Rules\NoOverlapRule;
+use App\Rules\TripDurationRule;
+use App\Services\StatsService;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
@@ -33,9 +35,8 @@ class TripResource extends Resource
         Forms\Components\Select::make('driver_id')
             ->label('Driver')
             ->searchable()
-            ->options(fn ($get) =>
-            $get('company_id')
-                ? Driver::where('company_id', $get('company_id'))->pluck('name', 'id')
+            ->options(fn ($get) => $get('company_id')
+                ? StatsService::companyDrivers($get('company_id'))
                 : []
             )
             ->required()
@@ -44,9 +45,8 @@ class TripResource extends Resource
         Forms\Components\Select::make('vehicle_id')
             ->label('Vehicle')
             ->searchable()
-            ->options(fn ($get) =>
-            $get('company_id')
-                ? Vehicle::where('company_id', $get('company_id'))->pluck('plate_number', 'id')
+            ->options(fn ($get) => $get('company_id')
+                ? StatsService::companyVehicles($get('company_id'))
                 : []
             )
             ->required()
@@ -59,7 +59,9 @@ class TripResource extends Resource
         Forms\Components\DateTimePicker::make('ends_at')
             ->required()
             ->after('starts_at')
-            ->rules([new NoOverlap(
+            ->rules([
+                new TripDurationRule(),
+                new NoOverlapRule(
                 fn() => request()->input('driver_id'),
                 fn() => request()->input('vehicle_id'),
                 request()->route('record')?->id ?? null // for edit mode

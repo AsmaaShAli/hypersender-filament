@@ -88,6 +88,28 @@ class StatsService
         );
     }
 
+    public static function companyDrivers(int $companyId): array
+    {
+        return Cache::remember(
+            "company:{$companyId}:drivers_list",
+            now()->addMinutes(30),
+            fn () => Driver::where('company_id', $companyId)
+                ->pluck('name', 'id')
+                ->toArray()
+        );
+    }
+
+    public static function companyVehicles(int $companyId): array
+    {
+        return Cache::remember(
+            "company:{$companyId}:vehicles_list",
+            now()->addMinutes(30),
+            fn () => Vehicle::where('company_id', $companyId)
+                ->pluck('name', 'id')
+                ->toArray()
+        );
+    }
+
     /**
      * Flush cache for a driver, vehicle, company, or dashboard
      */
@@ -109,6 +131,12 @@ class StatsService
     public static function flushDashboard(): void
     {
         Cache::forget("dashboard:kpis");
+    }
+
+    public static function flushCompanyLists(int $companyId): void
+    {
+        Cache::forget("company:{$companyId}:drivers_list");
+        Cache::forget("company:{$companyId}:vehicles_list");
     }
 
 }

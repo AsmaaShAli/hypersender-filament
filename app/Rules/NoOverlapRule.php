@@ -7,7 +7,7 @@ use Carbon\Carbon;
 use Closure;
 use Illuminate\Contracts\Validation\ValidationRule;
 
-class NoOverlap implements ValidationRule
+class NoOverlapRule implements ValidationRule
 {
     protected $driverId;
     protected $vehicleId;
