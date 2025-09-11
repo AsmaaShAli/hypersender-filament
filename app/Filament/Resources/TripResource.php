@@ -62,7 +62,7 @@ class TripResource extends Resource
             ->after('starts_at')
             ->rules([
                 function ($get) {
-                    return new TripDurationRule($get('starts_at'));
+                    return new TripDurationRule($get('starts_at'),$get('ends_at'));
                 }, function ($get,$record) {
                     return new NoOverlapRule(
                         $get('starts_at'),
