@@ -44,7 +44,7 @@ php artisan serve
 
 - Availability checker → see free drivers/vehicles in a time range.
 
-## 🎨UI Enhancements
+## 🎨 UI Enhancements
 
 - Sidebar navigation for resources.
 
